@@ -1,8 +1,8 @@
 use crate::jira::client;
 use serde::{Deserialize, Serialize};
-use crate::jira::auth::Auth;
+use crate::jira::auth::JiraAuth;
 
-pub async fn get_issue(id: &str, auth: &Auth) {
+pub async fn get_issue(id: &str, auth: &JiraAuth) {
     let url = format!("/issue/{}?fields=summary,issuetype", id);
     let response = client::make_request(
         url,

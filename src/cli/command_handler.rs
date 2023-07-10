@@ -1,5 +1,5 @@
 use crate::cli::cli_parser::{self, Cli};
-use crate::jira::auth::Auth;
+use crate::jira::auth::JiraAuth;
 use crate::jira::issue;
 
 pub async fn handle_command() {
@@ -18,14 +18,6 @@ pub async fn handle_command() {
 async fn handle_checkout(cli: &Cli, issue_id: &String) {
     println!("Value for ticket ID: {}", issue_id.as_str());
 
-    let auth = get_authentication(cli);
-
+    let auth = JiraAuth::from_cli(cli);
     issue::get_issue("CORG-10568", &auth).await;
-}
-
-fn get_authentication(cli: &Cli) -> Auth {
-    Auth {
-        username: cli.username.clone().unwrap_or(String::new()),
-        password: cli.password.clone(),
-    }
 }

@@ -1,9 +1,9 @@
 use reqwest::{IntoUrl, Response};
 use http::header::{ACCEPT, CONTENT_TYPE};
-use crate::jira::auth::Auth;
+use crate::jira::auth::JiraAuth;
 // use serde::{Deserialize, Serialize};
 
-pub async fn make_request<U: IntoUrl>(path: U, auth: &Auth) -> Response {
+pub async fn make_request<U: IntoUrl>(path: U, auth: &JiraAuth) -> Response {
     let client = reqwest::Client::new();
     let url = format!("https://netmanagement.atlassian.net/rest/api/3/{}", path.as_str());
 
