@@ -1,5 +1,7 @@
 use crate::cli::cli_parser::Cli;
+use serde::Deserialize;
 
+#[derive(Debug, Deserialize)]
 pub struct JiraAuth {
     pub username: String,
     pub password: Option<String>,
