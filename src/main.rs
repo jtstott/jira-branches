@@ -1,14 +1,14 @@
 mod jira;
 mod cli;
 mod app_config;
+mod branch;
 
-use std::collections::HashMap;
-use crate::cli::command_handler;
-use app_config::file_parser::{read_config_file, AUTH};
+use crate::cli::{cli_parser, command_handler};
+use crate::app_config::init;
 
 #[tokio::main]
 async fn main() {
-    let config = read_config_file();
-    println!("{:#?}", config)
-    // command_handler::handle_command().await
+    let cli = cli_parser::parse();
+    let config = init::initialize_config(&cli);
+    command_handler::handle_command(cli, config).await
 }

@@ -8,7 +8,7 @@ pub async fn make_request<U: IntoUrl>(path: U, auth: &JiraAuth) -> Response {
     let url = format!("https://netmanagement.atlassian.net/rest/api/3/{}", path.as_str());
 
     let response = client.get(url)
-        .basic_auth(&auth.username, auth.password.clone())
+        .basic_auth(&auth.user, Some(&auth.password))
         .header(CONTENT_TYPE, "application/json")
         .header(ACCEPT, "application/json")
         .send()

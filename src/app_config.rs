@@ -1,24 +1,20 @@
 use std::collections::HashMap;
 use serde::Deserialize;
+use crate::jira::auth::JiraAuth;
 
 pub mod file_parser;
+pub mod init;
 
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
-    auth: Auth,
-    base_url: String,
-    branch_template: String,
-    options: Options
+    pub auth: JiraAuth,
+    pub base_url: String,
+    pub branch_template: String,
+    pub options: Options
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Auth {
-    user: String,
-    password: String,
-}
-
-#[derive(Debug, Deserialize)]
-struct Options {
-    id_prefix: String,
-    map_types: HashMap<String, String>
+pub struct Options {
+    pub id_prefix: String,
+    pub map_types: HashMap<String, String>
 }
