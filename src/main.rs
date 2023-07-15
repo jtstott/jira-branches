@@ -2,6 +2,7 @@ mod jira;
 mod cli;
 mod app_config;
 mod branch;
+mod git;
 
 use crate::cli::{cli_parser, command_handler};
 use crate::app_config::init;

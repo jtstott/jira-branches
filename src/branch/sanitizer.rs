@@ -1,3 +1,5 @@
+use std::collections::{BTreeMap, HashMap};
+
 const FORBIDDEN_CHARS: [&str; 14] = [
     "..",
     "~",
@@ -15,9 +17,30 @@ const FORBIDDEN_CHARS: [&str; 14] = [
     ")"
 ];
 
-pub fn remove_forbidden_chars(mut branch_template: String) -> String {
+pub fn sanitize_branch(mut branch_name: String) -> String {
+    branch_name = remove_forbidden_chars(branch_name);
+    replace_chars(branch_name)
+}
+
+fn remove_forbidden_chars(mut branch_name: String) -> String {
     for char in FORBIDDEN_CHARS {
-        branch_template = branch_template.replace(char, "");
+        branch_name = branch_name.replace(char, "");
     }
-    branch_template
+    branch_name
+}
+
+fn replace_chars(mut branch_name: String) -> String {
+    let replacement_chars = [
+        (" ", "-"),
+        ("---", "-"),
+        ("--", "-"),
+        ("&", "and"),
+        (">", "gt"),
+        // ("/", "-"),
+    ];
+
+    for replacement in replacement_chars {
+        branch_name = branch_name.replace(replacement.0, replacement.1);
+    }
+    branch_name
 }
