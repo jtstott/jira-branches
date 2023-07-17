@@ -9,16 +9,16 @@ pub fn interpret_branch_template(config: &AppConfig, issue: JiraIssue) -> String
 
     for (key, value) in template_values {
         let to_replace = format!("[{}]", key);
-        branch_template = branch_template.replace(to_replace.as_str(), value.as_str());
+        branch_template = branch_template.replace(to_replace.as_str(), format_jira_value(key, value).as_str());
     }
 
-    branch_template = sanitizer::sanitize_branch(branch_template);
+    branch_template = sanitizer::remove_forbidden_chars(branch_template);
     println!("Template interpreted: {}", branch_template);
 
     branch_template
 }
 
-pub fn get_template_values(issue: JiraIssue) -> HashMap<&'static str, String> {
+fn get_template_values(issue: JiraIssue) -> HashMap<&'static str, String> {
     let mut template_values = HashMap::new();
     template_values.insert("id", issue.key);
     template_values.insert("type", issue.fields.issuetype.name);
@@ -27,4 +27,10 @@ pub fn get_template_values(issue: JiraIssue) -> HashMap<&'static str, String> {
     template_values
 }
 
-
+fn format_jira_value(key: &str, value: String) -> String {
+    match key {
+        "summary" => sanitizer::replace_chars(value).to_lowercase(),
+        "type" => value.to_lowercase(),
+        _ => value
+    }
+}

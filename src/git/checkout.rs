@@ -1,28 +1,29 @@
 use std::env;
-use git2::{BranchType, Repository};
+use git2::{Repository};
 
-pub fn checkout_branch(branch_name: String) {
-    let repo = Repository::open(env::current_dir().unwrap());
-
-    let repo = match repo {
-        Ok(repo) => repo,
-        Err(err) => panic!("Problem opening the file: {:?}", err)
-    };
+pub fn checkout_branch(branch_name: &str) {
+    let repo = Repository::open(env::current_dir().unwrap())
+        .expect("Not a git repository");
 
     let head = repo.head().unwrap();
-    println!("{:#?}", head.name());
+    let oid = head.target().unwrap();
+    let commit = repo.find_commit(oid).unwrap();
 
-    let refname = branch_name.as_str();
-    let (object, reference) = repo.revparse_ext(refname).expect("Object not found");
+    let _branch = repo.branch(
+        branch_name,
+        &commit,
+        false,
+    );
 
-    repo.checkout_tree(&object, None)
-        .expect("Failed to checkout");
+    let branch_ref = "refs/heads/".to_owned() + branch_name;
+    let refname = branch_ref.as_str();
 
-    match reference {
-        // gref is an actual reference like branches or tags
-        Some(gref) => repo.set_head(gref.name().unwrap()),
-        // this is a commit, not a reference
-        None => repo.set_head_detached(object.id()),
-    }
-        .expect("Failed to set HEAD");
+    let obj = repo.revparse_single(refname).unwrap();
+
+    repo.checkout_tree(
+        &obj,
+        None,
+    ).expect("Unable to checkout tree");
+
+    repo.set_head(refname).expect("Unable to set HEAD");
 }
