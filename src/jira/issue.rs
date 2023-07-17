@@ -6,7 +6,7 @@ pub async fn get_issue(id: &str, config: &AppConfig) -> JiraIssue {
     let url = format!("/issue/{}?fields=summary,issuetype", id);
     let response = client::make_request(
         url,
-        config,
+        &config.auth,
     ).await;
 
     match response.json::<JiraIssue>().await {

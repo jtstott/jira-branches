@@ -1,9 +1,9 @@
 use std::collections::HashMap;
-use crate::app_config::AppConfig;
+use crate::app_config::UserConfig;
 use crate::branch::sanitizer;
 use crate::jira::issue::JiraIssue;
 
-pub fn interpret_branch_template(config: &AppConfig, issue: JiraIssue) -> String {
+pub fn interpret_branch_template(config: &UserConfig, issue: JiraIssue) -> String {
     let template_values = get_template_values(issue);
     let mut branch_template = config.branch_template.clone();
 
