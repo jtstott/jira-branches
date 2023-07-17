@@ -12,10 +12,7 @@ pub fn interpret_branch_template(config: &UserConfig, issue: JiraIssue) -> Strin
         branch_template = branch_template.replace(to_replace.as_str(), format_jira_value(key, value).as_str());
     }
 
-    branch_template = sanitizer::remove_forbidden_chars(branch_template);
-    println!("Template interpreted: {}", branch_template);
-
-    branch_template
+    sanitizer::remove_forbidden_chars(branch_template)
 }
 
 fn get_template_values(issue: JiraIssue) -> HashMap<&'static str, String> {

@@ -16,8 +16,6 @@ pub async fn handle_command(cli: Cli, config: AppConfig) {
 }
 
 async fn handle_checkout(config: &AppConfig, issue_id: String) {
-    println!("Value for ticket ID: {}", issue_id.as_str());
-
     let issue_details = issue::get_issue(issue_id.as_str(), &config).await;
     let branch_name = template::interpret_branch_template(&config.config, issue_details);
     checkout::checkout_branch(branch_name.as_str());

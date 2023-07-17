@@ -1,29 +1,28 @@
 use config::Config;
+use serde::Deserialize;
 use crate::app_config::UserConfig;
 use crate::jira::auth::JiraAuth;
 
 pub fn read_config_file() -> UserConfig {
-    let dir = format!("{}/.config/jira-branches/config.json", dirs::home_dir().unwrap().as_path().to_str().unwrap());
-
-    let config = Config::builder()
-        .add_source(config::File::with_name(dir.as_str()))
-        .build()
-        .unwrap();
-
-    config
-        .try_deserialize::<UserConfig>()
-        .unwrap()
+    parse_file::<UserConfig>("config.json")
 }
 
 pub fn read_auth_file() -> JiraAuth {
-    let dir = format!("{}/.config/jira-branches/auth.json", dirs::home_dir().unwrap().as_path().to_str().unwrap());
+    parse_file::<JiraAuth>("auth.json")
+}
 
+fn parse_file<'de, F: Deserialize<'de>>(file_name: &str) -> F {
+    let path = get_config_path(file_name);
     let config = Config::builder()
-        .add_source(config::File::with_name(dir.as_str()))
+        .add_source(config::File::with_name(path.as_str()))
         .build()
         .unwrap();
 
     config
-        .try_deserialize::<JiraAuth>()
+        .try_deserialize::<F>()
         .unwrap()
+}
+
+fn get_config_path(file: &str) -> String {
+    format!("{}/.config/jira-branches/{}", dirs::home_dir().unwrap().as_path().to_str().unwrap(), file)
 }
