@@ -3,7 +3,8 @@ use serde::{Deserialize, Serialize};
 use crate::app_config::AppConfig;
 
 pub async fn get_issue(id: &str, config: &AppConfig) -> JiraIssue {
-    let url = format!("/issue/{}?fields=summary,issuetype", id);
+    let ticket_id = prefix_id(id, &config.config.options.id_prefix);
+    let url = format!("/issue/{}?fields=summary,issuetype", ticket_id);
     let response = client::make_request(
         url,
         &config.auth,
@@ -17,6 +18,14 @@ pub async fn get_issue(id: &str, config: &AppConfig) -> JiraIssue {
             // return None
         }
     }
+}
+
+fn prefix_id(id: &str, prefix: &String) -> String {
+    if !id.starts_with(prefix) {
+        return prefix.to_string() + id
+    }
+
+    id.to_string()
 }
 
 #[derive(Debug, Serialize, Deserialize)]

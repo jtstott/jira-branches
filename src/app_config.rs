@@ -15,7 +15,8 @@ pub struct UserConfig {
 #[derive(Debug, Deserialize)]
 pub struct Options {
     pub id_prefix: String,
-    pub map_types: HashMap<String, String>
+    pub map_types: HashMap<String, String>,
+    pub case: HashMap<String, String>
 }
 
 #[derive(Debug, Deserialize)]
