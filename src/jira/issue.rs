@@ -2,20 +2,21 @@ use crate::jira::client;
 use serde::{Deserialize, Serialize};
 use crate::app_config::AppConfig;
 
-pub async fn get_issue(id: &str, config: &AppConfig) -> JiraIssue {
+pub async fn get_issue(id: &str, config: &AppConfig) -> Result<JiraIssue, String> {
     let ticket_id = prefix_id(id, &config.config.options.id_prefix);
     let url = format!("/issue/{}?fields=summary,issuetype", ticket_id);
     let response = client::make_request(
         url,
-        &config.auth,
+        config,
     ).await;
 
-    match response.json::<JiraIssue>().await {
-        Ok(parsed) => { parsed }
+    match response?.json::<JiraIssue>().await {
+        Ok(parsed) => { Ok(parsed) }
         Err(_) => {
-            println!("Hm, the response didn't match the shape we expected.");
-            panic!("Can't keep going");
+            // println!("Hm, the response didn't match the shape we expected.");
+            // panic!("Can't keep going");
             // return None
+            Err(String::from("Hm, the response didn't match the shape we expected."))
         }
     }
 }

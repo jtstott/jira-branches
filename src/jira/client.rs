@@ -1,39 +1,29 @@
 use reqwest::{IntoUrl, Response};
 use http::header::{ACCEPT, CONTENT_TYPE};
-use crate::jira::auth::JiraAuth;
-// use serde::{Deserialize, Serialize};
+use http::StatusCode;
+use serde_json::Value;
+use crate::app_config::AppConfig;
+use crate::jira::error;
 
-pub async fn make_request<U: IntoUrl>(path: U, auth: &JiraAuth) -> Response {
+pub async fn make_request<U: IntoUrl>(path: U, config: &AppConfig) -> Result<Response, String> {
     let client = reqwest::Client::new();
-    let url = format!("https://netmanagement.atlassian.net/rest/api/3/{}", path.as_str());
+    let url = format!("{}/rest/api/3/{}", config.config.base_url, path.as_str());
 
     let response = client.get(url)
-        .basic_auth(&auth.user, Some(&auth.password))
+        .basic_auth(&config.auth.user, Some(&config.auth.password))
         .header(CONTENT_TYPE, "application/json")
         .header(ACCEPT, "application/json")
         .send()
         .await
         .unwrap();
 
-    response
-
-    //@TODO: Handle body serialization and/or errors.
-
-    // match response.status() {
-    //     reqwest::StatusCode::OK => {
-    //         return response.json()
-    //         // match response.json::<JiraResponse>().await {
-    //         //     Ok(parsed) => println!("Success! {:?}", parsed),
-    //         //     Err(_) => {
-    //         //         println!("Hm, the response didn't match the shape we expected.")
-    //         //     }
-    //         // };
-    //     }
-    //     reqwest::StatusCode::UNAUTHORIZED => {
-    //         println!("Need to grab a new token");
-    //     }
-    //     other => {
-    //         panic!("Uh oh! Something unexpected happened: {:?}", other);
-    //     }
-    // }
+    let status = response.status();
+    match status {
+        StatusCode::OK => Ok(response),
+        _ => {
+            let json = response.json::<Value>().await.unwrap();
+            let error = error::hande_error_response(json);
+            Err(error)
+        }
+    }
 }
