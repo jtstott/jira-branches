@@ -13,9 +13,6 @@ pub async fn get_issue(id: &str, config: &AppConfig) -> Result<JiraIssue, String
     match response?.json::<JiraIssue>().await {
         Ok(parsed) => { Ok(parsed) }
         Err(_) => {
-            // println!("Hm, the response didn't match the shape we expected.");
-            // panic!("Can't keep going");
-            // return None
             Err(String::from("Hm, the response didn't match the shape we expected."))
         }
     }
