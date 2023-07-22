@@ -7,8 +7,8 @@ use clap::{Parser, Subcommand};
 #[command(propagate_version = true)]
 pub struct Cli {
     /// Sets a custom config file
-    #[arg(short, long, value_name = "FILE", global = true)]
-    pub config: Option<PathBuf>,
+    // #[arg(short, long, value_name = "FILE", global = true)]
+    // pub config: Option<PathBuf>,
 
     /// Jira username
     #[arg(short, long, global = true)]
