@@ -1,9 +1,9 @@
 use crate::jira::client;
 use serde::{Deserialize, Serialize};
-use crate::app_config::AppConfig;
+use crate::app_config::{AppConfig, UserConfig};
 
 pub async fn get_issue(id: &str, config: &AppConfig) -> Result<JiraIssue, String> {
-    let ticket_id = prefix_id(id, &config.config.options.id_prefix);
+    let ticket_id = prefix_id(id, &config.config);
     let url = format!("/issue/{}?fields=summary,issuetype", ticket_id);
     let response = client::make_request(
         url,
@@ -18,9 +18,13 @@ pub async fn get_issue(id: &str, config: &AppConfig) -> Result<JiraIssue, String
     }
 }
 
-fn prefix_id(id: &str, prefix: &String) -> String {
-    if !id.starts_with(prefix) {
-        return prefix.to_string() + id
+fn prefix_id(id: &str, config: &UserConfig) -> String {
+    if let Some(options) = &config.options {
+        if let Some(prefix) = &options.id_prefix {
+            if !id.starts_with(prefix) {
+                return prefix.to_string() + id;
+            }
+        }
     }
 
     id.to_string()

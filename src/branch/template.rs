@@ -35,23 +35,31 @@ fn format_jira_value(key: &str, value: String, config: &UserConfig) -> String {
 }
 
 fn format_case(key: &str, value: String, config: &UserConfig) -> String {
-    let case = &config.options.case;
-
-    return match case.get(key) {
-        None => value,
-        Some(k) => {
-            match k.as_str() {
-                "lower" => value.to_lowercase(),
-                "upper" => value.to_uppercase(),
-                &_ => value
-            }
+    if let Some(options) = &config.options {
+        if let Some(case) = &options.case {
+            return match case.get(key) {
+                None => value,
+                Some(k) => {
+                    match k.as_str() {
+                        "lower" => value.to_lowercase(),
+                        "upper" => value.to_uppercase(),
+                        &_ => value
+                    }
+                }
+            };
         }
     }
+
+    value
 }
 
 fn map_type(config: &UserConfig, issue_type: &String) -> String {
-    let mapped_types = &config.options.map_types;
+    if let Some(options) = &config.options {
+        if let Some(mapped_types) = &options.map_types {
+            return mapped_types.get(issue_type.as_str())
+                .unwrap_or_else(|| mapped_types.get("*").unwrap_or(&issue_type)).clone()
+        }
+    };
 
-    mapped_types.get(issue_type.as_str())
-        .unwrap_or_else(|| mapped_types.get("*").unwrap_or(&issue_type)).clone()
+    issue_type.to_string()
 }

@@ -9,14 +9,14 @@ pub mod init;
 pub struct UserConfig {
     pub base_url: String,
     pub branch_template: String,
-    pub options: Options
+    pub options: Option<Options>
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Options {
-    pub id_prefix: String,
-    pub map_types: HashMap<String, String>,
-    pub case: HashMap<String, String>
+    pub id_prefix: Option<String>,
+    pub map_types: Option<HashMap<String, String>>,
+    pub case: Option<HashMap<String, String>>
 }
 
 #[derive(Debug, Deserialize)]
