@@ -11,7 +11,14 @@ For example: `feature/PROJECT-1078-some-jira-ticket-title`
 
 ## Installation
 
-1. Download the application binary
+### Mac
+
+1. Download the latest release
+```bash
+curl -OL https://github.com/jtstott/jira-branches/releases/latest/download/jira_branches-x86_64-apple-darwin.tar.gz && \
+tar -xzvf jira_branches-x86_64-apple-darwin.tar.gz && \
+rm jira_branches-x86_64-apple-darwin.tar.gz
+```
 2. Move the binary into a directory in your local path, e.g. `/usr/local/bin/`
 2. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username and
    password:
