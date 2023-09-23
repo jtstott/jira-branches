@@ -26,7 +26,7 @@ fn get_template_values(issue: JiraIssue, config: &UserConfig) -> HashMap<&'stati
 }
 
 fn format_jira_value(key: &str, value: String, config: &UserConfig) -> String {
-    let formatted_value = format_case(key, value, config);
+    let formatted_value = String::from(format_case(key, value, config).trim());
     match key {
         "summary" => sanitizer::replace_chars(formatted_value),
         "type" => formatted_value,
