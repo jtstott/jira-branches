@@ -1,9 +1,12 @@
 use crate::jira::client;
 use serde::{Deserialize, Serialize};
+use url::{Url};
 use crate::app_config::{AppConfig, UserConfig};
+use crate::jira::issue_url::parse_url;
 
-pub async fn get_issue(id: &str, config: &AppConfig) -> Result<JiraIssue, String> {
-    let ticket_id = prefix_id(id, &config.config);
+pub async fn get_issue(issue_ref: &str, config: &AppConfig) -> Result<JiraIssue, String> {
+    let id = extract_id(issue_ref)?;
+    let ticket_id = prefix_id(id.as_str(), &config.config);
     let url = format!("/issue/{}?fields=summary,issuetype", ticket_id);
     let response = client::make_request(
         url,
@@ -28,6 +31,15 @@ fn prefix_id(id: &str, config: &UserConfig) -> String {
     }
 
     id.to_string()
+}
+
+fn extract_id(issue_ref: &str) -> Result<String, &str> {
+    match Url::parse(issue_ref) {
+        Ok(url) => parse_url(url),
+        Err(_) => {
+            Ok(issue_ref.to_string())
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

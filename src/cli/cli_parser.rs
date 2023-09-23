@@ -26,9 +26,9 @@ pub struct Cli {
 pub enum Commands {
     /// Checkout branch for a Jira issue
     Checkout {
-        /// Jira issue ID
+        /// Jira issue ID or URL
         #[arg(short, long)]
-        issue_id: String,
+        issue: String,
     }
 }
 

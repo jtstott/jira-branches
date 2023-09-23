@@ -5,7 +5,7 @@ use serde_json::Value;
 use crate::app_config::AppConfig;
 use crate::jira::error;
 
-pub async fn make_request<U: IntoUrl>(path: U, AppConfig {config, auth}: &AppConfig) -> Result<Response, String> {
+pub async fn make_request<U: IntoUrl>(path: U, AppConfig { config, auth }: &AppConfig) -> Result<Response, String> {
     let client = reqwest::Client::new();
     let url = format!("{}/rest/api/3/{}", config.base_url, path.as_str());
 
