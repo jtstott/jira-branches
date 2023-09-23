@@ -14,11 +14,13 @@ For example: `feature/PROJECT-1078-some-jira-ticket-title`
 ### Mac
 
 1. Download the latest release
+
 ```bash
 curl -OL https://github.com/jtstott/jira-branches/releases/latest/download/jira_branches-x86_64-apple-darwin.tar.gz && \
 tar -xzvf jira_branches-x86_64-apple-darwin.tar.gz && \
 rm jira_branches-x86_64-apple-darwin.tar.gz
 ```
+
 2. Move the binary into a directory in your local path, e.g. `/usr/local/bin/`
 2. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username and
    password:
@@ -65,11 +67,12 @@ jira_branches --help
 
 ### Checkout branch
 
-The `checkout` command takes an `--issue-id` argument, and will checkout a git branch for the current git repository
+The `checkout` command takes an `--issue` argument, and will checkout a git branch for the current git repository
 formatted to the configured template. If the branch doesn't already exist it will be created.
 
-To checkout to a git branch for a given Jira ticket ID (`ID`), run the `checkout` command, supplying the ticket ID
-with `--issue-id` or `-i`:
+To checkout to a git branch for a given Jira ticket ID (`ID`), or Jira ticket URL, run the `checkout` command, supplying
+the ticket ID or ticket URL
+with `--issue` or `-i`:
 
 ```shell
 jira_branches checkout -i ID
