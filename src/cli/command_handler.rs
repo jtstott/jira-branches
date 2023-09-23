@@ -6,7 +6,7 @@ use crate::jira::issue;
 
 pub async fn handle_command(cli: Cli, config: AppConfig) -> Result<(), String> {
     match cli.command {
-        cli_parser::Commands::Checkout { issue_id } => { handle_checkout(&config, issue_id).await?; }
+        cli_parser::Commands::Checkout { issue } => { handle_checkout(&config, issue).await?; }
     }
 
     // if let Some(config_path) = cli.config.as_deref() {
@@ -16,9 +16,10 @@ pub async fn handle_command(cli: Cli, config: AppConfig) -> Result<(), String> {
     Ok(())
 }
 
-async fn handle_checkout(config: &AppConfig, issue_id: String) -> Result<(), String> {
-    let issue_details = issue::get_issue(issue_id.as_str(), &config).await;
+async fn handle_checkout(config: &AppConfig, issue: String) -> Result<(), String> {
+    let issue_details = issue::get_issue(issue.as_str(), &config).await;
+    println!("{:?}", issue_details);
     let branch_name = template::interpret_branch_template(&config.config, issue_details?);
-    checkout::checkout_branch(branch_name.as_str());
+    // checkout::checkout_branch(branch_name.as_str());
     Ok(())
 }
