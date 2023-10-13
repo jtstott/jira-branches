@@ -1,28 +1,31 @@
 name: Release
 
-on: push
-
-env:
-  CARGO_TERM_COLOR: always
+on:
+  push:
+    tags:
+      - "v*"
 
 jobs:
   release:
+    env:
+      CARGO_TERM_COLOR: always
+      BINARY_NAME: jira-branches
     name: Release - ${{ matrix.platform.release_for }}
     strategy:
       matrix:
         platform:
-          - release_for: FreeBSD-x86_64
-            os: ubuntu-20.04
-            target: x86_64-unknown-freebsd
-            bin: jira-branches
-            name: jira-branches-FreeBSD-x86_64.tar.gz
-            command: build
+#          - release_for: FreeBSD-x86_64
+#            os: ubuntu-20.04
+#            target: x86_64-unknown-freebsd
+#            bin: jira-branches
+#            name: jira-branches-FreeBSD-x86_64.tar.gz
+#            command: build
 
           - release_for: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
-            bin: jira-branches
-            name: jira-branches-Darwin-x86_64.tar.gz
+            bin: ${{ env.BINARY_NAME }}
+            name: ${{ env.BINARY_NAME }}-Darwin-x86_64.tar.gz
             command: build
             
 #          - release_for: macOS-aarch64
@@ -49,3 +52,22 @@ jobs:
           ls -la target
           ls -la target/release
           ls -la target/x86_64-apple-darwin/release
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
+
+#      - name: Upload macOS x86 binary to release
+#        uses: Spikatrix/upload-release-action@b713c4b73f0a8ddda515820c124efc6538685492
+#        with:
+#          repo_token: ${{ secrets.GITHUB_TOKEN }}
+#          file: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
+#          asset_name: ${{ env.BINARY_NAME }}-macos-x86
+#          target_commit: ${{ github.sha }}
+#          tag: v${{ env.RELEASE_VERSION }}
+#          release_name: ${{ github.event.release.tag_name }}
+#          prerelease: false
+#          overwrite: true
+#          body: ${{ env.BINARY_NAME }} release
