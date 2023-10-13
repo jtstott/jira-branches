@@ -3,9 +3,10 @@ name: Rust
 permissions:
   contents: write
 
-on:
-  release:
-    types: [published]
+on: push
+#on:
+#  release:
+#    types: [published]
 
 env:
   CARGO_TERM_COLOR: always
@@ -14,10 +15,13 @@ jobs:
   upload-assets:
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            build-tool: cargo-zigbuild
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            build-tool: cargo
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
