@@ -25,8 +25,8 @@ jobs:
           - release_for: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
-            bin: ${{ env.BINARY_NAME }}
-            name: ${{ env.BINARY_NAME }}-Darwin-x86_64.tar.gz
+            bin: jira-branches
+            name: jira-branches-Darwin-x86_64.tar.gz
             command: build
             
 #          - release_for: macOS-aarch64
