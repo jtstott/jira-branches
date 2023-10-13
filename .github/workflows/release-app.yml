@@ -30,7 +30,7 @@ jobs:
             bin: jira-branches
             name: jira-branches-Darwin-x86_64.tar.gz
             command: build
-            
+
 #          - release_for: macOS-aarch64
 #            os: macOS-latest
 #            target: aarch64-apple-darwin
@@ -50,8 +50,15 @@ jobs:
           args: "--locked --release"
           strip: true
 
+      - name: Zip files
+        uses: vimtor/action-zip@v1.1
+        with:
+          files: target/${{ matrix.platform.target }}/release/${{ env.BINARY_NAME }}
+          dest: jira_branches-${{ matrix.platform.target }}.tar.gz
+
       - name: List files
         run: |
+          ls -la
           ls -la target
           ls -la target/release
           ls -la target/x86_64-apple-darwin/release
@@ -60,7 +67,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
+          files: jira_branches-${{ matrix.platform.target }}.tar.gz
 
 #      - name: Upload macOS x86 binary to release
 #        uses: Spikatrix/upload-release-action@b713c4b73f0a8ddda515820c124efc6538685492
