@@ -5,6 +5,10 @@ use crate::jira::auth::JiraAuth;
 pub mod file_parser;
 pub mod init;
 
+pub mod config_writer;
+pub mod config_wizard;
+pub mod config_wizard_inquire;
+
 #[derive(Debug, Deserialize)]
 pub struct UserConfig {
     pub base_url: String,

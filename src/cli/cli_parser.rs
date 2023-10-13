@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+// use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 /// Jira Branches
@@ -29,6 +29,9 @@ pub enum Commands {
         /// Jira issue ID or URL
         #[arg(short, long)]
         issue: String,
+    },
+    /// Configure tool
+    Config {
     }
 }
 
