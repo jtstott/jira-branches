@@ -3,13 +3,13 @@ name: Rust
 permissions:
   contents: write
 
-on:
-  push:
-    tags:
-      - '*'
 #on:
-#  release:
-#    types: [published]
+#  push:
+#    tags:
+#      - '*'
+on:
+  release:
+    types: [published]
 
 env:
   CARGO_TERM_COLOR: always
