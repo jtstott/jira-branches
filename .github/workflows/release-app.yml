@@ -46,4 +46,5 @@ jobs:
 
       - name: List files
         run: |
-          ls -la
+          ls -la target
+          ls -la target/release
