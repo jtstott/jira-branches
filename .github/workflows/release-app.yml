@@ -5,11 +5,12 @@ on:
     tags:
       - "v*"
 
+env:
+  CARGO_TERM_COLOR: always
+  BINARY_NAME: jira-branches
+
 jobs:
   release:
-    env:
-      CARGO_TERM_COLOR: always
-      BINARY_NAME: jira-branches
     name: Release - ${{ matrix.platform.release_for }}
     strategy:
       matrix:
