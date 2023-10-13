@@ -48,3 +48,4 @@ jobs:
         run: |
           ls -la target
           ls -la target/release
+          ls -la target/x86_64-apple-darwin/release
