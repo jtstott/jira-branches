@@ -11,7 +11,7 @@ For example: `feature/PROJECT-1078-some-jira-ticket-title`
 
 ## Installation
 
-#### From source
+### From source
 
 Installing from source will allow the binary to be built for your current operating system. As the CI does not support
 MacOS for ARM, **this is the installation method to use if you want to install on an ARM based Mac**.
@@ -28,8 +28,9 @@ MacOS for ARM, **this is the installation method to use if you want to install o
    mv jb /usr/local/bin/jb
    ```
 
-3. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username and
-   password:
+### Setup
+1. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username (email) and
+   password (this can be a Jira API token):
    ```json lines
    {
      // Jira username
@@ -39,7 +40,7 @@ MacOS for ARM, **this is the installation method to use if you want to install o
    }
    ```
 
-4. Define your configuration in the file: `~/.config/jira-branches/config.json`. The configuration should be in the
+2. Define your configuration in the file: `~/.config/jira-branches/config.json`. The configuration should be in the
    following format:
    ```json lines
    {
