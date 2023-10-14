@@ -1,6 +1,6 @@
 use std::env;
 use std::str;
-use git2::{Branch, BranchType, Error, ErrorCode, Repository, SubmoduleIgnore};
+use git2::{BranchType, Error, ErrorCode, Repository, SubmoduleIgnore};
 
 pub fn checkout_branch(branch_name: &str) {
     let repo = Repository::discover(env::current_dir().unwrap())
@@ -82,7 +82,7 @@ fn print_short(repo: &Repository, statuses: &git2::Statuses) {
             s if s.contains(git2::Status::INDEX_TYPECHANGE) => 'T',
             _ => ' ',
         };
-        let mut wstatus = match entry.status() {
+        let wstatus = match entry.status() {
             s if s.contains(git2::Status::WT_NEW) => {
                 if istatus == ' ' {
                     istatus = '?';
