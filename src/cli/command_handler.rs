@@ -9,10 +9,6 @@ pub async fn handle_command(cli: Cli, config: AppConfig) -> Result<(), String> {
         cli_parser::Commands::Checkout { issue } => { handle_checkout(&config, issue).await?; }
     }
 
-    // if let Some(config_path) = cli.config.as_deref() {
-    //     println!("Value for config: {}", config_path.display());
-    // }
-
     Ok(())
 }
 
