@@ -49,7 +49,7 @@ jobs:
 #          target: ${{ matrix.platform.target }}
 #          args: "--locked --release"
 #          strip: true
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     steps:
       - name: Build-musl macOS x86
         uses: Shogan/rust-musl-action@v1.0.2
