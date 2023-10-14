@@ -23,9 +23,9 @@ MacOS for ARM, **this is the installation method to use if you want to install o
    rm -rf ./jira-branches
    ```
 2. The jb binary will be available in your current directory, move it to a directory in your path, for
-   example `/usr/local/bin/`:
+   example `/usr/local/bin/` (requires sudo):
    ```bash
-   mv jb /usr/local/bin/jb
+   sudo mv jb /usr/local/bin/jb
    ```
 
 ### Setup
