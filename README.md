@@ -11,45 +11,49 @@ For example: `feature/PROJECT-1078-some-jira-ticket-title`
 
 ## Installation
 
-### Mac
+#### From source
 
-1. Download the latest release
+Installing from source will allow the binary to be built for your current operating system. As the CI does not support
+MacOS for ARM, **this is the installation method to use if you want to install on an ARM based Mac**.
 
-```bash
-curl -OL https://github.com/jtstott/jira-branches/releases/latest/download/jira_branches-x86_64-apple-darwin.tar.gz && \
-tar -xzvf jira_branches-x86_64-apple-darwin.tar.gz && \
-rm jira_branches-x86_64-apple-darwin.tar.gz
-```
+1. Run the following in your terminal to download the source and build the binary:
+   ```bash
+   git clone git@github.com:jtstott/jira-branches.git && \
+   ./jira-branches/install.sh && \
+   rm -rf ./jira-branches
+   ```
+2. The jb binary will be available in your current directory, move it to a directory in your path, for
+   example `/usr/local/bin/`:
+   ```bash
+   mv jb /usr/local/bin/jb
+   ```
 
-2. Move the binary into a directory in your local path, e.g. `/usr/local/bin/`
-2. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username and
+3. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username and
    password:
+   ```json lines
+   {
+     // Jira username
+     "user": "",
+     // Jira password
+     "password": ""
+   }
+   ```
 
-```json lines
-{
-  // Jira username
-  "user": "",
-  // Jira password
-  "password": ""
-}
-```
-
-3. Define your configuration in the file: `~/.config/jira-branches/config.json`. The configuration should be in the
+4. Define your configuration in the file: `~/.config/jira-branches/config.json`. The configuration should be in the
    following format:
-
-```json lines
-{
-  // Jira instance base URL
-  "base_url": "",
-  // Branch name template with jira variable tokens
-  "branch_template": "",
-  "options": {
-    "id_prefix": "",
-    "map_types": {},
-    "case": {}
-  }
-}
-```
+   ```json lines
+   {
+     // Jira instance base URL
+     "base_url": "",
+     // Branch name template with jira variable tokens
+     "branch_template": "",
+     "options": {
+       "id_prefix": "",
+       "map_types": {},
+       "case": {}
+     }
+   }
+   ```
 
 The valid configuration options are described in the configuration [section](#configuration). You can use
 the [full example configuration file](#full-example-configuration-file) as a starting point.
@@ -58,11 +62,11 @@ the [full example configuration file](#full-example-configuration-file) as a sta
 
 ## Usage
 
-Assuming the binary is in your local PATH, then the tool can be run from your terminal with the `jira_branches` command.
+Assuming the binary is in your local PATH, then the tool can be run from your terminal with the `jb` command.
 Check that this works by running
 
 ```shell
-jira_branches --help
+jb --help
 ```
 
 ### Checkout branch
@@ -75,7 +79,7 @@ the ticket ID or ticket URL
 with `--issue` or `-i`:
 
 ```shell
-jira_branches checkout -i ID
+jb checkout -i ID
 ```
 
 ### Alias
@@ -84,7 +88,7 @@ It is recommended to create an alias in your `.bash_profile` (or whichever shell
 command to make it easier to use:
 
 ```bash
-alias jb="jira_branches checkout -i"
+alias jb="jb checkout -i"
 ```
 
 The checkout command can easily be run then using the following shorthand:
