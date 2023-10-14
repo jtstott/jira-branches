@@ -5,7 +5,9 @@ edition = "2021"
 authors = ["John Stott"]
 description = "Simple CLI tool for using Jira to define git branches"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[[bin]]
+name = "jb"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4.3.11", features = ["derive"] }
