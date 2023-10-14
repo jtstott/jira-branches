@@ -14,22 +14,22 @@ jobs:
     name: Release - ${{ matrix.platform.release_for }}
     permissions:
       contents: write
-#    strategy:
-#      matrix:
-#        platform:
+    strategy:
+      matrix:
+        platform:
 #          - release_for: FreeBSD-x86_64
 #            os: ubuntu-20.04
 #            target: x86_64-unknown-freebsd
 #            bin: jira-branches
 #            name: jira-branches-FreeBSD-x86_64.tar.gz
 #            command: build
-#
-#          - release_for: macOS-x86_64
-#            os: macOS-latest
-#            target: x86_64-apple-darwin
-#            bin: jira-branches
-#            name: jira-branches-Darwin-x86_64.tar.gz
-#            command: build
+
+          - release_for: macOS-x86_64
+            os: macOS-13
+            target: x86_64-apple-darwin
+            bin: jira-branches
+            name: jira-branches-Darwin-x86_64.tar.gz
+            command: build
 
 #          - release_for: macOS-aarch64
 #            os: macOS-latest
@@ -37,33 +37,24 @@ jobs:
 #            bin: jira-branches
 #            name: jira-branches-Darwin-x86_64.tar.gz
 #            command: build
-#
-#    runs-on: ${{ matrix.platform.os }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Build binary
-#        uses: houseabsolute/actions-rust-cross@v0
-#        with:
-#          command: ${{ matrix.platform.command }}
-#          target: ${{ matrix.platform.target }}
-#          args: "--locked --release"
-#          strip: true
-    runs-on: ubuntu-latest
+
+    runs-on: ${{ matrix.platform.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      - name: Build-musl macOS x86
-        uses: Shogan/rust-musl-action@v1.0.2
+      - name: Build binary
+        uses: houseabsolute/actions-rust-cross@v0
         with:
-          args: cargo build --target x86_64-apple-darwin --release
+          command: ${{ matrix.platform.command }}
+          target: ${{ matrix.platform.target }}
+          args: "--locked --release"
+          strip: true
 
-      - name: Zip files
-        uses: vimtor/action-zip@v1.1
-        with:
-          files: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
-          dest: ${{ env.BINARY_NAME }}-x86_64-apple-darwin.tar.gz
+#      - name: Zip files
+#        uses: vimtor/action-zip@v1.1
+#        with:
+#          files: target/${{ matrix.platform.target }}/release/${{ env.BINARY_NAME }}
+#          dest: ${{ env.BINARY_NAME }}-${{ matrix.platform.target }}.tar.gz
 
       - name: List files
         run: |
@@ -72,21 +63,19 @@ jobs:
           ls -la target/release
           ls -la target/x86_64-apple-darwin/release
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: ${{ env.BINARY_NAME }}-x86_64-apple-darwin.tar.gz
-
-#      - name: Upload macOS x86 binary to release
-#        uses: Spikatrix/upload-release-action@b713c4b73f0a8ddda515820c124efc6538685492
+#      - name: Release
+#        uses: softprops/action-gh-release@v1
+#        if: startsWith(github.ref, 'refs/tags/')
 #        with:
-#          repo_token: ${{ secrets.GITHUB_TOKEN }}
-#          file: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
-#          asset_name: ${{ env.BINARY_NAME }}-macos-x86
-#          target_commit: ${{ github.sha }}
-#          tag: v${{ env.RELEASE_VERSION }}
-#          release_name: ${{ github.event.release.tag_name }}
-#          prerelease: false
-#          overwrite: true
-#          body: ${{ env.BINARY_NAME }} release
+#          files: ${{ env.BINARY_NAME }}-${{ matrix.platform.target }}.tar.gz
+
+      - name: Upload macOS x86 binary to release
+        uses: Spikatrix/upload-release-action@b713c4b73f0a8ddda515820c124efc6538685492
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
+          asset_name: ${{ env.BINARY_NAME }}-macos-x86
+          target_commit: ${{ github.sha }}
+          prerelease: false
+          overwrite: true
+          body: ${{ env.BINARY_NAME }} release
