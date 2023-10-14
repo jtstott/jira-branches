@@ -11,7 +11,7 @@ fi
 echo "Building binary for your system..."
 cargo build --release
 
-cp target/release/jira_branches "$initial_wd/jb"
+cp target/release/jb "$initial_wd/jb"
 
 pwd
 echo "$initial_wd"
