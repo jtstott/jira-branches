@@ -76,6 +76,7 @@ jobs:
           file: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
           asset_name: ${{ env.BINARY_NAME }}-macos-x86
           target_commit: ${{ github.sha }}
+          tag: ${{ github.ref }}
           prerelease: false
           overwrite: true
           body: ${{ env.BINARY_NAME }} release
