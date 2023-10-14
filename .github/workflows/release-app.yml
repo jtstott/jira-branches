@@ -24,19 +24,19 @@ jobs:
 #            name: jira-branches-FreeBSD-x86_64.tar.gz
 #            command: build
 
-          - release_for: macOS-x86_64
-            os: macOS-13
-            target: x86_64-apple-darwin
-            bin: jira-branches
-            name: jira-branches-Darwin-x86_64.tar.gz
-            command: build
-
-#          - release_for: macOS-aarch64
-#            os: macOS-latest
-#            target: aarch64-apple-darwin
+#          - release_for: macOS-x86_64
+#            os: macOS-13
+#            target: x86_64-apple-darwin
 #            bin: jira-branches
 #            name: jira-branches-Darwin-x86_64.tar.gz
 #            command: build
+
+          - release_for: macOS-aarch64
+            os: macos-13-xl
+            target: aarch64-apple-darwin
+            bin: jira-branches
+            name: jira-branches-Darwin-aarch64.tar.gz
+            command: build
 
     runs-on: ${{ matrix.platform.os }}
     steps:
@@ -69,11 +69,11 @@ jobs:
 #        with:
 #          files: ${{ env.BINARY_NAME }}-${{ matrix.platform.target }}.tar.gz
 
-      - name: Upload macOS x86 binary to release
+      - name: Upload binary to release
         uses: Spikatrix/upload-release-action@b713c4b73f0a8ddda515820c124efc6538685492
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: target/x86_64-apple-darwin/release/${{ env.BINARY_NAME }}
+          file: target/${{ matrix.platform.target }}/release/${{ env.BINARY_NAME }}
           asset_name: ${{ env.BINARY_NAME }}-macos-x86
           target_commit: ${{ github.sha }}
           tag: ${{ github.ref }}
