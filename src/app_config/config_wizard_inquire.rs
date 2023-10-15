@@ -1,9 +1,11 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use std::fmt::format;
 use colored::Colorize;
-use inquire::{Confirm, InquireError, Password, PasswordDisplayMode, required, Text};
+use inquire::{Confirm, InquireError, MultiSelect, Password, PasswordDisplayMode, required, Text};
 use inquire::error::InquireResult;
 use inquire::ui::RenderConfig;
 use crate::app_config::{AppConfig, Options, UserConfig};
+use crate::branch::template::get_template_tokens;
 use crate::jira::auth::JiraAuth;
 
 pub fn config_wizard_inq() -> Result<(), InquireError> {
@@ -32,8 +34,8 @@ pub fn config_wizard_inq() -> Result<(), InquireError> {
     // let base_url = Text::new("Enter your Jira instance URL:")
     //     .prompt()?;
     //
-    // let branch_template = Text::new("Set your branch template:")
-    //     .prompt()?;
+    let branch_template = Text::new("Set your branch template:")
+        .prompt()?;
     //
     // let id_prefix = Text::new("Set an issue ID prefix?:")
     //     .with_help_message("Optional - This option can be set if all Jira ticket IDs start with the same prefix. The prefix will be prepended to all issue ID arguments.")
@@ -60,11 +62,38 @@ pub fn config_wizard_inq() -> Result<(), InquireError> {
         };
     };
 
-    let do_case_transform = Confirm::new("Transform the case of values?")
-        .with_help_message("y/n")
-        .with_placeholder("y")
-        .with_default(true)
+    // let do_case_transform = Confirm::new("Transform the case of values?")
+    //     .with_help_message("y/n")
+    //     .with_placeholder("y")
+    //     .with_default(true)
+    //     .prompt()?;
+
+    let transform_lower_options = get_template_tokens(branch_template);
+
+    let to_lower_prompt = format!("Select token values to transform to {} case", "LOWER".bold());
+    let to_lower = MultiSelect::new(to_lower_prompt.as_str(), Vec::from_iter(transform_lower_options.clone()))
         .prompt()?;
+
+    let to_lower_col: HashSet<String> = to_lower.iter().cloned().collect();
+
+    let transform_upper_options = &transform_lower_options - &to_lower_col;
+
+    let to_upper_prompt = format!("Select token values to transform to {} case", "UPPER".bold());
+    let to_upper = MultiSelect::new(to_upper_prompt.as_str(), Vec::from_iter(transform_upper_options))
+        .prompt()?;
+
+    let mut case_map = HashMap::new();
+
+    for u in to_upper {
+        case_map.insert(u, "upper");
+    };
+
+    for l in to_lower {
+        case_map.insert(l, "lower");
+    };
+
+    println!("{:?}", case_map);
+    // println!("{:?}", to_upper);
 
     // let config = UserConfig {
     //     base_url: base_url,

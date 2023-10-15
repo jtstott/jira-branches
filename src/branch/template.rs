@@ -1,4 +1,5 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use regex::Regex;
 use crate::app_config::UserConfig;
 use crate::branch::sanitizer;
 use crate::jira::issue::JiraIssue;
@@ -14,6 +15,17 @@ pub fn interpret_branch_template(config: &UserConfig, issue: JiraIssue) -> Strin
     }
 
     sanitizer::remove_forbidden_chars(branch_template)
+}
+
+pub fn get_template_tokens(template: String) -> HashSet<String> {
+    let re = Regex::new(r"\[(.*?)]").unwrap();
+    let mut tokens: HashSet<String> = HashSet::new();
+
+    for (_, [val]) in re.captures_iter(template.as_str()).map(|c| c.extract()) {
+        tokens.insert(val.into());
+    }
+
+    tokens
 }
 
 fn get_template_values(issue: JiraIssue, config: &UserConfig) -> HashMap<&'static str, String> {
