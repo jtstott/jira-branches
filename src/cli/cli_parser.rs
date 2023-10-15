@@ -1,4 +1,3 @@
-// use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 /// Jira Branches
@@ -6,10 +5,6 @@ use clap::{Parser, Subcommand};
 #[command(author, version, about, long_about = None)]
 #[command(propagate_version = true)]
 pub struct Cli {
-    /// Sets a custom config file
-    // #[arg(short, long, value_name = "FILE", global = true)]
-    // pub config: Option<PathBuf>,
-
     /// Jira username
     #[arg(short, long, global = true)]
     pub username: Option<String>,
