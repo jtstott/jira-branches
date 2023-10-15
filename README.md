@@ -89,13 +89,13 @@ It is recommended to create an alias in your `.bash_profile` (or whichever shell
 command to make it easier to use:
 
 ```bash
-alias jb="jb checkout -i"
+alias jbc="jb checkout -i"
 ```
 
 The checkout command can easily be run then using the following shorthand:
 
 ```bash
-jb ID
+jbc ID
 ```
 
 ---
