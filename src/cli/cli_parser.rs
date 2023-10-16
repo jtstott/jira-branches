@@ -22,7 +22,7 @@ pub enum Commands {
     /// Checkout branch for a Jira issue
     Checkout {
         /// Jira issue ID or URL
-        #[arg(short, long)]
+        #[arg()]
         issue: String,
     }
 }
