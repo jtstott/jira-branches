@@ -17,7 +17,7 @@ pub fn interpret_branch_template(config: &UserConfig, issue: JiraIssue) -> Strin
     sanitizer::remove_forbidden_chars(branch_template)
 }
 
-pub fn get_template_tokens(template: String) -> HashSet<String> {
+pub fn get_template_tokens(template: &String) -> HashSet<String> {
     let re = Regex::new(r"\[(.*?)]").unwrap();
     let mut tokens: HashSet<String> = HashSet::new();
 

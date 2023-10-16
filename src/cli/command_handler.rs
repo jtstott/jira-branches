@@ -29,6 +29,7 @@ async fn handle_checkout(config: &AppConfig, issue: String) -> Result<(), String
 fn handle_configure() {
     // let wizard_config = config_wizard();
     let wizard_config = config_wizard_inq();
+    println!("Config: {:#?}", wizard_config)
 
     // println!("Handling configure: {:?}", wizard_config);
 }
