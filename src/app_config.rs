@@ -4,27 +4,26 @@ use crate::jira::auth::JiraAuth;
 
 pub mod file_parser;
 pub mod init;
-
 pub mod config_writer;
 pub mod config_wizard;
-pub mod config_wizard_inquire;
 
 #[derive(Debug, Deserialize)]
 pub struct UserConfig {
     pub base_url: String,
     pub branch_template: String,
-    pub options: Option<Options>
+    pub options: Option<Options>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Default)]
 pub struct Options {
     pub id_prefix: Option<String>,
     pub map_types: Option<HashMap<String, String>>,
-    pub case: Option<HashMap<String, String>>
+    pub case: Option<HashMap<String, String>>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
     pub auth: JiraAuth,
-    pub config: UserConfig
+    pub config: UserConfig,
 }
+
