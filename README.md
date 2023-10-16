@@ -72,24 +72,23 @@ jb --help
 
 ### Checkout branch
 
-The `checkout` command takes an `--issue` argument, and will checkout a git branch for the current git repository
+The `checkout` command takes an `ISSUE ID` argument, and will checkout a git branch for the current git repository
 formatted to the configured template. If the branch doesn't already exist it will be created.
 
 To checkout to a git branch for a given Jira ticket ID (`ID`), or Jira ticket URL, run the `checkout` command, supplying
-the ticket ID or ticket URL
-with `--issue` or `-i`:
+the ticket ID or ticket URL:
 
 ```shell
-jb checkout -i ID
+jb checkout <ISSUE>
 ```
 
 ### Alias
 
-It is recommended to create an alias in your `.bash_profile` (or whichever shell profile you use) to the checkout
+To create a shorthand for this command, create an alias in your `.bash_profile` (or whichever shell profile you use) to the checkout
 command to make it easier to use:
 
 ```bash
-alias jbc="jb checkout -i"
+alias jbc="jb checkout"
 ```
 
 The checkout command can easily be run then using the following shorthand:
