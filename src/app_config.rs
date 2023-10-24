@@ -6,8 +6,9 @@ pub mod file_parser;
 pub mod init;
 pub mod config_writer;
 pub mod config_wizard;
+mod autocomplete_template;
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Default, Clone)]
 pub struct UserConfig {
     pub base_url: String,
     pub branch_template: String,
@@ -21,7 +22,7 @@ pub struct Options {
     pub case: Option<HashMap<String, String>>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Default, Clone)]
 pub struct AppConfig {
     pub auth: JiraAuth,
     pub config: UserConfig,

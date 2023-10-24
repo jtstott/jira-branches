@@ -34,8 +34,8 @@ async fn main() -> ExitCode {
 
 async fn run() -> Result<(), Box<dyn Error>> {
     let cli = cli_parser::parse();
-    let config = init::initialize_config(Some(&cli))?;
-    command_handler::handle_command(cli, config).await?;
+    // let config = init::initialize_config(Some(&cli))?;
+    command_handler::handle_command(cli).await?;
 
     Ok(())
 }

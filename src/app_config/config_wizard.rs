@@ -2,21 +2,23 @@ use std::collections::{HashMap};
 use std::error::Error;
 use colored::Colorize;
 use inquire::{Confirm, InquireError, MultiSelect, Password, PasswordDisplayMode, required, Text};
+use inquire::error::InquireResult;
 use crate::app_config::{AppConfig, init, Options, UserConfig};
+use crate::app_config::autocomplete_template::JiraTemplateCompleter;
 use crate::branch::template::get_template_tokens;
 use crate::jira::auth::JiraAuth;
 
 pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
-    let existing_config = init::initialize_config(None)?;
     println!("{}", "🪄 Jira Branches configuration wizard".bold().bright_blue());
+    let existing_config = init::initialize_config(None).unwrap_or_default();
 
     println!("{}", "\n🔐 First we need to authenticate with your Jira account...".bold().bright_blue());
 
-    let user = Text::new("Enter the email address for your Jira account:")
-        .with_help_message("Base URL of your Jira instance, E.g. https://my-org.atlassian.net")
-        .with_validator(required!())
-        .with_default(existing_config.auth.user.as_str())
-        .prompt()?;
+    let user = wrap_text_prompt(
+        Text::new("Enter the email address for your Jira account:")
+            .with_validator(required!()),
+        &existing_config.auth.user)?;
+
     let password = Password::new("Enter your password for your Jira account:")
         .without_confirmation()
         .with_display_mode(PasswordDisplayMode::Masked)
@@ -25,13 +27,19 @@ pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
 
     println!("{}", "\n⚙️ Now let's setup your configuration...".bold().bright_blue());
 
-    let base_url = Text::new("Enter your Jira instance URL:")
-        .with_default(existing_config.config.base_url.as_str())
-        .prompt()?;
+    let base_url = wrap_text_prompt(
+        Text::new("Enter your Jira instance URL:")
+            .with_help_message("Base URL of your Jira instance, E.g. https://my-org.atlassian.net")
+            .with_validator(required!()),
+        &existing_config.config.base_url
+    )?;
 
-    let branch_template = Text::new("Set your branch template:")
-        .with_default(existing_config.config.branch_template.as_str())
-        .prompt()?;
+    let branch_template = wrap_text_prompt(
+        Text::new("Set your branch template:")
+            .with_autocomplete(JiraTemplateCompleter::default())
+            .with_validator(required!()),
+        &existing_config.config.branch_template
+    )?;
 
     let options = existing_config.config.options;
 
@@ -68,7 +76,7 @@ pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
             options: Some(Options {
                 id_prefix,
                 map_types,
-                case: Some(case_map),
+                case: case_map,
             }),
         },
     };
@@ -76,6 +84,14 @@ pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
     print_config(&app_config);
 
     Ok(app_config)
+}
+
+fn wrap_text_prompt(input: Text, default: &String) -> InquireResult<String> {
+    if !default.is_empty() {
+        return input.with_default(default.as_str()).prompt();
+    }
+
+    input.prompt()
 }
 
 fn read_map_types() -> Result<Option<HashMap<String, String>>, InquireError> {
@@ -98,7 +114,7 @@ fn read_map_types() -> Result<Option<HashMap<String, String>>, InquireError> {
     Ok(Some(map_types))
 }
 
-fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<String, String>>) -> Result<HashMap<String, String>, InquireError> {
+fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<String, String>>) -> Result<Option<HashMap<String, String>>, InquireError> {
     let transform_lower_options = get_template_tokens(branch_template);
     let opts = Vec::from_iter(transform_lower_options.clone());
 
@@ -108,6 +124,8 @@ fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<St
             .filter(|(k, v)| v == &"lower")
             .for_each(|(k, v)| lowers.push(k));
     }
+
+    if transform_lower_options.is_empty() { return Ok(None); };
 
     fn case_transform_prompt(case: &str) -> String {
         format!("Select token values to transform to {} case", case.bold())
@@ -133,12 +151,12 @@ fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<St
         case_map.insert(u, "upper".into());
     };
 
-    Ok(case_map)
+    Ok(if case_map.is_empty() { None } else { Some(case_map) })
 }
 
 fn print_config(app_config: &AppConfig) {
-    println!("{}", "\nJira branches successfully configured!".green().bold());
-    println!("{}", "\n🔐 Authentication".bright_blue().bold());
+    println!("{}", "\nYour updated Jira branches configuration:".bold());
+    println!("{}", "🔐 Authentication".bright_blue().bold());
     display_value("Username", &app_config.auth.user);
 
     let password_display = if app_config.auth.password.is_empty() { "".into() } else { "*".repeat(app_config.auth.password.len()) };
@@ -161,8 +179,11 @@ fn print_config(app_config: &AppConfig) {
             display_value("Case transformations", &format!("{:?}", case));
         }
     }
+    println!("{}", "\nJira branches successfully configured!".green().bold());
 }
 
 fn display_value(key: &str, value: &String) {
-    println!("{}: {}", key.bold(), value);
+    if !value.is_empty() {
+        println!("{}: {}", key.bold(), value);
+    }
 }
