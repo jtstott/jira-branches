@@ -4,7 +4,7 @@ use colored::Colorize;
 use inquire::{Confirm, InquireError, MultiSelect, Password, PasswordDisplayMode, required, Text};
 use inquire::error::InquireResult;
 use crate::app_config::{AppConfig, init, Options, UserConfig};
-use crate::app_config::autocomplete_template::JiraTemplateCompleter;
+use crate::app_config::token_completer::JiraTokenCompleter;
 use crate::branch::template::get_template_tokens;
 use crate::jira::auth::JiraAuth;
 
@@ -36,7 +36,7 @@ pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
 
     let branch_template = wrap_text_prompt(
         Text::new("Set your branch template:")
-            .with_autocomplete(JiraTemplateCompleter::default())
+            .with_autocomplete(JiraTokenCompleter::default())
             .with_validator(required!()),
         &existing_config.config.branch_template
     )?;

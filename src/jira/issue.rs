@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use crate::jira::client;
 use serde::{Deserialize, Serialize};
 use url::{Url};
@@ -7,7 +8,7 @@ use crate::jira::issue_url::parse_url;
 pub async fn get_issue(issue_ref: &str, config: &AppConfig) -> Result<JiraIssue, String> {
     let id = extract_id(issue_ref)?;
     let ticket_id = prefix_id(id.as_str(), &config.config);
-    let url = format!("/issue/{}?fields=summary,issuetype", ticket_id);
+    let url = format!("/issue/{}?fields={}", ticket_id, build_fields_query_string());
     let response = client::make_request(
         url,
         config,
@@ -31,6 +32,21 @@ fn prefix_id(id: &str, config: &UserConfig) -> String {
     }
 
     id.to_string()
+}
+
+pub fn jira_fields() -> HashMap<&'static str, &'static str> {
+    HashMap::from([
+        ("id", "id"),
+        ("summary", "summary"),
+        ("issuetype", "type"),
+    ])
+}
+
+pub fn build_fields_query_string() -> String {
+    let mut fields = jira_fields();
+    fields.remove("id");
+    let keys: Vec<&str> = fields.into_keys().collect();
+    keys.to_owned().join(",")
 }
 
 fn extract_id(issue_ref: &str) -> Result<String, &str> {

@@ -6,7 +6,7 @@ pub mod file_parser;
 pub mod init;
 pub mod config_writer;
 pub mod config_wizard;
-mod autocomplete_template;
+mod token_completer;
 
 #[derive(Debug, Deserialize, Default, Clone)]
 pub struct UserConfig {

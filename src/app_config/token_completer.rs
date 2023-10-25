@@ -2,13 +2,13 @@ use inquire::autocompletion::{Replacement};
 use inquire::{Autocomplete, CustomUserError};
 
 #[derive(Clone, Default)]
-pub struct JiraTemplateCompleter {
+pub struct JiraTokenCompleter {
     input: String,
     tokens: Vec<String>,
     lcp: String,
 }
 
-impl JiraTemplateCompleter {
+impl JiraTokenCompleter {
     fn update_input(&mut self, input: &str) -> Result<(), CustomUserError> {
         if input == self.input {
             return Ok(());
@@ -35,7 +35,7 @@ impl JiraTemplateCompleter {
                 current_input = format!("[{}", ci);
             }
             if entry.starts_with(current_input.as_str()) && entry.len() != current_input.len() {
-                self.tokens.push(entry.into());
+                self.tokens.push(entry.to_string());
             }
 
             idx = idx.saturating_add(1);
@@ -69,7 +69,7 @@ impl JiraTemplateCompleter {
     }
 }
 
-impl Autocomplete for JiraTemplateCompleter {
+impl Autocomplete for JiraTokenCompleter {
     fn get_suggestions(&mut self, input: &str) -> Result<Vec<String>, CustomUserError> {
         self.update_input(input)?;
 
@@ -84,12 +84,7 @@ impl Autocomplete for JiraTemplateCompleter {
         self.update_input(input)?;
         Ok(match highlighted_suggestion {
             Some(suggestion) => {
-                match self.input.to_owned().strip_suffix('[') {
-                    None => Replacement::None,
-                    Some(cur) => {
-                        Replacement::Some(format!("{}{}", cur, suggestion))
-                    }
-                }
+                self.input.to_owned().strip_suffix('[').map(|cur| format!("{}{}", cur, suggestion))
             }
             None => Replacement::None
         })
