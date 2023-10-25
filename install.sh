@@ -5,7 +5,7 @@ cd "$(dirname "$0")" || exit
 if ! command -v rustup &> /dev/null
 then
     echo "Installing Rust..."
-    curl https://sh.rustup.rs -sSf | sh
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
 fi
 
 echo "Building binary for your system..."
