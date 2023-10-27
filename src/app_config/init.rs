@@ -1,11 +1,27 @@
 use config::ConfigError;
-use crate::app_config::{AppConfig};
+use crate::app_config::{AppConfig, UserConfig};
 use crate::app_config::file_parser;
 use crate::cli::cli_parser::Cli;
 use crate::jira::auth::JiraAuth;
 
 pub fn initialize_config(cli: Option<&Cli>) -> Result<AppConfig, ConfigError> {
+    Ok(AppConfig {
+        auth: load_auth(cli)?,
+        config: load_user_config()?,
+    })
+}
+
+pub fn load_user_config() -> Result<UserConfig, ConfigError>  {
     let config = file_parser::read_config_file()?;
+
+    if config.is_none() {
+        return Err(ConfigError::Message(no_config_error()));
+    };
+
+    Ok(config.unwrap())
+}
+
+pub fn load_auth(cli: Option<&Cli>) -> Result<JiraAuth, ConfigError>  {
     let mut auth = file_parser::read_auth_file()?;
 
     if let Some(c) = cli {
@@ -14,18 +30,12 @@ pub fn initialize_config(cli: Option<&Cli>) -> Result<AppConfig, ConfigError> {
         }
     }
 
+
     if auth.is_none() {
         return Err(ConfigError::Message(no_auth_error()));
     };
 
-    if config.is_none() {
-        return Err(ConfigError::Message(no_config_error()));
-    };
-
-    Ok(AppConfig {
-        auth: auth.unwrap(),
-        config: config.unwrap(),
-    })
+    Ok(auth.unwrap())
 }
 
 fn no_auth_error() -> String {

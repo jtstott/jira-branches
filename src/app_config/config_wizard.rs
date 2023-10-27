@@ -4,20 +4,22 @@ use colored::Colorize;
 use inquire::{Confirm, InquireError, MultiSelect, Password, PasswordDisplayMode, required, Text};
 use inquire::error::InquireResult;
 use crate::app_config::{AppConfig, init, Options, UserConfig};
+use crate::app_config::file_parser::write_config;
 use crate::app_config::token_completer::JiraTokenCompleter;
 use crate::branch::template::get_template_tokens;
 use crate::jira::auth::JiraAuth;
 
 pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
     println!("{}", "🪄 Jira Branches configuration wizard".bold().bright_blue());
-    let existing_config = init::initialize_config(None).unwrap_or_default();
+    let existing_config = init::load_user_config().unwrap_or_default();
+    let existing_auth = init::load_auth(None).unwrap_or_default();
 
     println!("{}", "\n🔐 First we need to authenticate with your Jira account...".bold().bright_blue());
 
     let user = wrap_text_prompt(
         Text::new("Enter the email address for your Jira account:")
             .with_validator(required!()),
-        &existing_config.auth.user)?;
+        &existing_auth.user)?;
 
     let password = Password::new("Enter your password for your Jira account:")
         .without_confirmation()
@@ -31,17 +33,17 @@ pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
         Text::new("Enter your Jira instance URL:")
             .with_help_message("Base URL of your Jira instance, E.g. https://my-org.atlassian.net")
             .with_validator(required!()),
-        &existing_config.config.base_url
+        &existing_config.base_url,
     )?;
 
     let branch_template = wrap_text_prompt(
         Text::new("Set your branch template:")
             .with_autocomplete(JiraTokenCompleter::default())
             .with_validator(required!()),
-        &existing_config.config.branch_template
+        &existing_config.branch_template,
     )?;
 
-    let options = existing_config.config.options;
+    let options = existing_config.options;
 
     let id_prefix = Text::new("Set an issue ID prefix?:")
         .with_help_message("Optional - This option can be set if all Jira ticket IDs start with the same prefix. The prefix will be prepended to all issue ID arguments.")
@@ -82,6 +84,7 @@ pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
     };
 
     print_config(&app_config);
+    write_config(&app_config)?;
 
     Ok(app_config)
 }
@@ -118,6 +121,8 @@ fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<St
     let transform_lower_options = get_template_tokens(branch_template);
     let opts = Vec::from_iter(transform_lower_options.clone());
 
+    let mut case_map: HashMap<String, String> = HashMap::new();
+
     let mut lowers: Vec<&String> = Vec::new();
     if let Some(c) = case_config {
         c.iter()
@@ -131,25 +136,30 @@ fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<St
         format!("Select token values to transform to {} case", case.bold())
     }
 
-    let to_lower = MultiSelect::new(
-        case_transform_prompt("LOWER").as_str(),
-        opts,
-    )
-        .prompt()?;
+    if !transform_lower_options.is_empty() {
+        let to_lower = MultiSelect::new(
+            case_transform_prompt("LOWER").as_str(),
+            opts,
+        )
+            .prompt()?;
 
-    let to_upper = MultiSelect::new(
-        case_transform_prompt("UPPER").as_str(),
-        Vec::from_iter(&transform_lower_options - &to_lower.iter().cloned().collect()),
-    )
-        .prompt()?;
+        for l in &to_lower {
+            case_map.insert(l.to_owned(), "lower".into());
+        };
 
-    let mut case_map: HashMap<String, String> = HashMap::new();
-    for l in to_lower {
-        case_map.insert(l, "lower".into());
-    };
-    for u in to_upper {
-        case_map.insert(u, "upper".into());
-    };
+        let transform_upper_options = &transform_lower_options - &to_lower.iter().cloned().collect();
+        if !transform_upper_options.is_empty() {
+            let to_upper = MultiSelect::new(
+                case_transform_prompt("UPPER").as_str(),
+                Vec::from_iter(transform_upper_options),
+            )
+                .prompt()?;
+
+            for u in to_upper {
+                case_map.insert(u, "upper".into());
+            };
+        }
+    }
 
     Ok(if case_map.is_empty() { None } else { Some(case_map) })
 }

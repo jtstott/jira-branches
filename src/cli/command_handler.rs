@@ -3,7 +3,7 @@ use config::ConfigError;
 // use std::collections::HashMap;
 use crate::app_config::{AppConfig, init};
 use crate::app_config::config_wizard::config_wizard;
-use crate::app_config::file_parser::write_config_file;
+use crate::app_config::file_parser::{write_config, write_user_config};
 use crate::branch::template;
 use crate::cli::cli_parser::{self, Cli};
 use crate::git::checkout;
@@ -30,15 +30,8 @@ async fn handle_checkout(cli: &Cli, issue: String) -> Result<(), Box<dyn Error>>
 }
 
 fn handle_configure() -> Result<(), Box<dyn Error>> {
-    let wizard_config = config_wizard();
+    config_wizard()?;
     // println!("Config: {:#?}", wizard_config);
-
-    match wizard_config {
-        Ok(config) => {
-            write_config_file(&config.config);
-        }
-        Err(err) => {return Err(err)}
-    };
 
     Ok(())
 }
