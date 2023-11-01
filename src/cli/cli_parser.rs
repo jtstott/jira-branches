@@ -26,9 +26,9 @@ pub enum Commands {
         #[arg()]
         issue: String,
     },
-    /// Configure tool
+    /// Configure Jira Branches
     Config {
-        /// Sets a custom config file
+        /// Sets configuration from config file path
         #[arg(short, long, value_name = "FILE", global = true)]
         file: Option<PathBuf>,
     }
