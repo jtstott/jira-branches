@@ -20,17 +20,17 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
-    /// Checkout branch for a Jira issue
-    Checkout {
-        /// Jira issue ID or URL
-        #[arg()]
-        issue: String,
-    },
     /// Configure Jira Branches
     Configure {
         /// Sets configuration from config file path
         #[arg(short, long, value_name = "FILE", global = true)]
         file: Option<PathBuf>,
+    },
+    /// Checkout branch for a Jira issue
+    Checkout {
+        /// Jira issue ID or URL
+        #[arg()]
+        issue: String,
     }
 }
 
