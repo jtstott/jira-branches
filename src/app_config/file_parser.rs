@@ -8,12 +8,16 @@ use std::fs::File;
 const CONFIG_FILE: &str = "config.json";
 const AUTH_FILE: &str = "auth.json";
 
-pub fn read_config_file() -> Result<Option<UserConfig>, ConfigError> {
-    parse_file::<UserConfig>(CONFIG_FILE)
+pub fn read_config_file(path: Option<&str>) -> Result<Option<UserConfig>, ConfigError> {
+    let default = get_config_path(CONFIG_FILE);
+    let file_path = path.unwrap_or(default.as_str());
+    parse_file::<UserConfig>(file_path)
 }
 
-pub fn read_auth_file() -> Result<Option<JiraAuth>, ConfigError> {
-    parse_file::<JiraAuth>(AUTH_FILE)
+pub fn read_auth_file(path: Option<&str>) -> Result<Option<JiraAuth>, ConfigError> {
+    let default = get_config_path(AUTH_FILE);
+    let file_path = path.unwrap_or(default.as_str());
+    parse_file::<JiraAuth>(file_path)
 }
 
 pub fn write_config(config: &AppConfig) -> Result<(), Box<dyn Error>> {
@@ -40,10 +44,9 @@ fn create_file(file_name: &str) -> Result<File, Box<dyn Error>> {
     Ok(File::create(get_config_path(file_name))?)
 }
 
-fn parse_file<'de, F: Deserialize<'de>>(file_name: &str) -> Result<Option<F>, ConfigError> {
-    let path = get_config_path(file_name);
+fn parse_file<'de, F: Deserialize<'de>>(path: &str) -> Result<Option<F>, ConfigError> {
     let config = Config::builder()
-        .add_source(config::File::with_name(path.as_str()))
+        .add_source(config::File::with_name(path))
         .build()
         .ok();
 

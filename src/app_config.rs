@@ -7,6 +7,7 @@ pub mod init;
 pub mod config_writer;
 pub mod config_wizard;
 mod token_completer;
+mod config_loader;
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct UserConfig {

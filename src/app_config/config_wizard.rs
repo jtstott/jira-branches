@@ -3,7 +3,7 @@ use std::error::Error;
 use colored::Colorize;
 use inquire::{Confirm, InquireError, MultiSelect, Password, PasswordDisplayMode, required, Text};
 use inquire::error::InquireResult;
-use crate::app_config::{AppConfig, init, Options, UserConfig};
+use crate::app_config::{AppConfig, config_loader, init, Options, UserConfig};
 use crate::app_config::file_parser::write_config;
 use crate::app_config::token_completer::JiraTokenCompleter;
 use crate::branch::template::get_template_tokens;
@@ -11,8 +11,8 @@ use crate::jira::auth::JiraAuth;
 
 pub fn config_wizard() -> Result<AppConfig, Box<dyn Error>> {
     println!("{}", "🪄 Jira Branches configuration wizard".bold().bright_blue());
-    let existing_config = init::load_user_config().unwrap_or_default();
-    let existing_auth = init::load_auth(None).unwrap_or_default();
+    let existing_config = config_loader::load_user_config().unwrap_or_default();
+    let existing_auth = config_loader::load_auth(None).unwrap_or_default();
 
     println!("{}", "\n🔐 First we need to authenticate with your Jira account...".bold().bright_blue());
 

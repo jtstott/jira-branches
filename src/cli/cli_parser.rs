@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 /// Jira Branches
@@ -27,6 +28,9 @@ pub enum Commands {
     },
     /// Configure tool
     Config {
+        /// Sets a custom config file
+        #[arg(short, long, value_name = "FILE", global = true)]
+        file: Option<PathBuf>,
     }
 }
 
