@@ -3,7 +3,7 @@ use std::error::Error;
 use colored::Colorize;
 use inquire::{Confirm, InquireError, MultiSelect, Password, PasswordDisplayMode, required, Text};
 use inquire::error::InquireResult;
-use crate::app_config::{AppConfig, config_loader, init, Options, UserConfig};
+use crate::app_config::{AppConfig, config_loader, Options, UserConfig};
 use crate::app_config::file_parser::write_config;
 use crate::app_config::token_completer::JiraTokenCompleter;
 use crate::branch::template::get_template_tokens;
@@ -126,8 +126,8 @@ fn read_case_transform(branch_template: &String, case_config: &Option<HashMap<St
     let mut lowers: Vec<&String> = Vec::new();
     if let Some(c) = case_config {
         c.iter()
-            .filter(|(k, v)| v == &"lower")
-            .for_each(|(k, v)| lowers.push(k));
+            .filter(|(_k, v)| v == &"lower")
+            .for_each(|(k, _v)| lowers.push(k));
     }
 
     if transform_lower_options.is_empty() { return Ok(None); };
