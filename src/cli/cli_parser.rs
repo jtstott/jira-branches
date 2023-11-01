@@ -27,7 +27,7 @@ pub enum Commands {
         issue: String,
     },
     /// Configure Jira Branches
-    Config {
+    Configure {
         /// Sets configuration from config file path
         #[arg(short, long, value_name = "FILE", global = true)]
         file: Option<PathBuf>,

@@ -11,7 +11,7 @@ use crate::jira::issue;
 pub async fn handle_command(cli: Cli) -> Result<(), Box<dyn Error>> {
     match &cli.command {
         cli_parser::Commands::Checkout { issue } => { handle_checkout(&cli, issue.to_owned()).await?; }
-        cli_parser::Commands::Config { file } => { handle_configure(file.to_owned())?; }
+        cli_parser::Commands::Configure { file } => { handle_configure(file.to_owned())?; }
     }
 
     Ok(())
