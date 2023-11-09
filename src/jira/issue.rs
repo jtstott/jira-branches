@@ -49,7 +49,7 @@ pub fn build_fields_query_string() -> String {
     keys.to_owned().join(",")
 }
 
-fn extract_id(issue_ref: &str) -> Result<String, &str> {
+pub fn extract_id(issue_ref: &str) -> Result<String, &str> {
     match Url::parse(issue_ref) {
         Ok(url) => parse_url(url),
         Err(_) => {

@@ -31,6 +31,12 @@ pub enum Commands {
         /// Jira issue ID or URL
         #[arg()]
         issue: String,
+    },
+    /// List branches for a Jira issue
+    Ls {
+        /// Jira issue ID or URL
+        #[arg()]
+        issue: String,
     }
 }
 

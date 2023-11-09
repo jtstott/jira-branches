@@ -28,9 +28,3 @@ pub struct AppConfig {
     pub auth: JiraAuth,
     pub config: UserConfig,
 }
-
-// impl Clone for UserConfig {
-//     fn clone(&self) -> UserConfig {
-//         *self
-//     }
-// }
