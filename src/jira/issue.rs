@@ -3,11 +3,10 @@ use crate::jira::client;
 use serde::{Deserialize, Serialize};
 use url::{Url};
 use crate::app_config::{AppConfig, UserConfig};
-use crate::jira::issue_url::parse_url;
+use crate::jira::issue_url;
 
 pub async fn get_issue(issue_ref: &str, config: &AppConfig) -> Result<JiraIssue, String> {
-    let id = extract_id(issue_ref)?;
-    let ticket_id = prefix_id(id.as_str(), &config.config);
+    let ticket_id = get_ticket_id(issue_ref, config)?;
     let url = format!("/issue/{}?fields={}", ticket_id, build_fields_query_string());
     let response = client::make_request(
         url,
@@ -20,6 +19,13 @@ pub async fn get_issue(issue_ref: &str, config: &AppConfig) -> Result<JiraIssue,
             Err(String::from("Hm, the response didn't match the shape we expected."))
         }
     }
+}
+
+pub fn get_ticket_id(issue_ref: &str, config: &AppConfig) -> Result<String, String> {
+    let id = extract_id(issue_ref)?;
+    let ticket_id = prefix_id(id.as_str(), &config.config);
+
+    Ok(ticket_id)
 }
 
 fn prefix_id(id: &str, config: &UserConfig) -> String {
@@ -51,7 +57,7 @@ pub fn build_fields_query_string() -> String {
 
 pub fn extract_id(issue_ref: &str) -> Result<String, &str> {
     match Url::parse(issue_ref) {
-        Ok(url) => parse_url(url),
+        Ok(url) => issue_url::parse_url(url),
         Err(_) => {
             Ok(issue_ref.to_string())
         }
