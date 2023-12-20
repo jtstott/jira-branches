@@ -21,7 +21,7 @@ jobs:
       - name: Zip release files
         shell: bash
         run:
-          gzip -c dist/jb-aarch64-apple-darwin > dist/jb-aarch64-apple-darwin.gz
+          gzip -c bin/jb-aarch64-apple-darwin > bin/jb-aarch64-apple-darwin.gz
 
       - name: Release
         uses: softprops/action-gh-release@v1
