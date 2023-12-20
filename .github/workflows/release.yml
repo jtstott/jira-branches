@@ -26,7 +26,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: bin/jb-aarch64-apple-darwin.gz
+          files: bin/jb-aarch64-apple-darwin.tar.gz
   build-platforms:
     needs: create-release
     strategy:
