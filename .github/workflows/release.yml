@@ -18,11 +18,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Zip release files
+        shell: bash
+        run:
+          gzip -c dist/jb-aarch64-apple-darwin > dist/jb-aarch64-apple-darwin.gz
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/aarch64-apple-darwin/jb
+          files: dist/jb-aarch64-apple-darwin.gz
   build-platforms:
+    needs: create-release
     strategy:
       matrix:
         os:

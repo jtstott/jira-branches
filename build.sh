@@ -9,6 +9,6 @@ TARGET=$(rustc -vV | sed -n 's|host: ||p')
 # Build release binary
 cargo build -r
 
-# Copy binary output to dist/
-mkdir -p "./dist/$TARGET/"
-cp ./target/release/jb ./dist/"$TARGET"/jb
+# Copy binary output to bin/
+mkdir -p "./bin/"
+cp ./target/release/jb ./bin/"jb-$TARGET"
