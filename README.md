@@ -9,27 +9,71 @@ For example: `feature/PROJECT-1078-some-jira-ticket-title`
 
 ---
 
-## Installation
+# Installation
 
-### From source
+## Mac
 
-Installing from source will allow the binary to be built for your current operating system. As the CI does not support
-MacOS for ARM, **this is the installation method to use if you want to install on an ARM based Mac**.
+1. Download the latest release
 
-1. Run the following in your terminal to download the source and build the binary:
+   #### Apple Silicon
    ```bash
-   git clone git@github.com:jtstott/jira-branches.git && \
-   ./jira-branches/install.sh && \
-   rm -rf ./jira-branches
+   curl -OL https://github.com/jtstott/jira-branches/releases/latest/download/jb-aarch64-apple-darwin.tar.gz && \
+   tar -xzvf jb-aarch64-apple-darwin.tar.gz && \
+   rm jb-aarch64-apple-darwin.tar.gz
    ```
-2. The jb binary will be available in your current directory, move it to a directory in your path, for
+
+   #### Intel
+   ```bash
+   curl -OL https://github.com/jtstott/jira-branches/releases/latest/download/jb-x86_64-apple-darwin.tar.gz && \
+   tar -xzvf jb-x86_64-apple-darwin.tar.gz && \
+   rm jb-x86_64-apple-darwin.tar.gz
+   ```
+
+2. The `jb` binary will be available in your current directory, move it to a directory in your path, for
    example `/usr/local/bin/` (requires sudo):
    ```bash
    sudo mv jb /usr/local/bin/jb
    ```
 
-### Setup
-1. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username (email) and
+## Linux
+
+1. Download the latest release
+
+   #### Intel
+   ```bash
+   curl -OL https://github.com/jtstott/jira-branches/releases/latest/download/jb-x86_64-unknown-linux-gnu.tar.gz && \
+   tar -xzvf jb-x86_64-unknown-linux-gnu.tar.gz && \
+   rm jb-x86_64-unknown-linux-gnu.tar.gz
+   ```
+
+2. The `jb` binary will be available in your current directory, move it to a directory in your path, for
+   example `/usr/local/bin/` (requires sudo):
+   ```bash
+   sudo mv jb /usr/local/bin/jb
+   ```
+
+---
+
+# Setup
+
+There are two ways to configure jira branches, either [manually](#manual) by creating the config files, or by using the
+[config wizard](#config-wizard).
+
+## Config wizard
+
+Jira branches can be configured through the CLI with the `configure` command:
+
+```shell
+jb configure
+```
+
+Enter the values when prompted, refer to the configuration [section](#configuration) for further details on each of the
+config values.
+
+## Manual
+
+1. Authenticate with Jira by creating the file `~/.config/jira-branches/auth.json` and add your Jira username (email)
+   and
    password (this can be a Jira API token):
    ```json lines
    {
@@ -61,7 +105,7 @@ the [full example configuration file](#full-example-configuration-file) as a sta
 
 ---
 
-## Usage
+# Usage
 
 Assuming the binary is in your local PATH, then the tool can be run from your terminal with the `jb` command.
 Check that this works by running
@@ -84,7 +128,8 @@ jb checkout <ISSUE>
 
 ### Alias
 
-To create a shorthand for this command, create an alias in your `.bash_profile` (or whichever shell profile you use) to the checkout
+To create a shorthand for this command, create an alias in your `.bash_profile` (or whichever shell profile you use) to
+the checkout
 command to make it easier to use:
 
 ```bash
