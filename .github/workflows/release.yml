@@ -21,12 +21,13 @@ jobs:
       - name: Zip release files
         shell: bash
         run:
-          tar -czf jb-aarch64-apple-darwin.tar.gz bin/jb-aarch64-apple-darwin
+          cd bin
+          tar -czf jb-aarch64-apple-darwin.tar.gz jb-aarch64-apple-darwin
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: jb-aarch64-apple-darwin.tar.gz
+          files: bin/jb-aarch64-apple-darwin.tar.gz
   build-platforms:
     needs: create-release
     strategy:
