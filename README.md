@@ -114,7 +114,7 @@ Check that this works by running
 jb --help
 ```
 
-### Checkout branch
+## Checkout branch
 
 The `checkout` command takes an `ISSUE ID` argument, and will checkout a git branch for the current git repository
 formatted to the configured template. If the branch doesn't already exist it will be created.
@@ -142,18 +142,31 @@ The checkout command can easily be run then using the following shorthand:
 jbc ID
 ```
 
+## List branches
+
+To list the available branches for a given Jira issue ID, or issue URL, you can use the list command:
+
+```shell
+jb ls <ISSUE>
+```
+
+This will return a list of any branches that include the given issue ID.
+
+*_This command is only able to search through branches that are available on your local machine. To ensure the branches
+are up-to-date with the remote, update your local before running this command, for example by running `git pull`._
+
 ---
 
-## Configuration
+# Configuration
 
-### Required
+## Required
 
 | Key               | Description                                                                                                                                                                                                             |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `base_url`        | Jira base URL. This will be the base URL of your Jira instance.<br/>For example, https://my-org.atlassian.net                                                                                                           |
 | `branch_template` | The `branch_template` must be configured to the format the branch name will be created to. Any string is valid (excluding forbidden branch name characters), and tokens can be used to represent Jira ticket variables. |
 
-### Options
+## Options
 
 | Option      | Description                                                                                                                                                                                                                                                                                                                                                                          |
 |-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -161,7 +174,7 @@ jbc ID
 | `map_types` | The `map_types` option allows jira ticket types to be mapped to other values for branch name generation. For example, a ticket type of `Story` may want to be mapped in the branch name to `feature`.                                                                                                                                                                                |
 | `case`      | The `case` option can be used to transform the raw Jira values to either upper or lower case. Valid values are either `"upper"` or `"lower"`.                                                                                                                                                                                                                                        |
 
-### Branch template
+## Branch template
 
 The `branch_template` must be configured to the format the branch name will be created to. Any string is valid (
 excluding
@@ -174,7 +187,7 @@ template: `"feat/[id]-[summary]"` would generate the branch name `feat/ID-123-gr
 
 It is important to note that spaces will always be replaced by dashes (`-`).
 
-#### Valid jira ticket variables
+### Valid jira ticket variables
 
 The branch name tokens currently supported are:
 
@@ -182,12 +195,12 @@ The branch name tokens currently supported are:
 - `summary`: Ticket summary/title
 - `type`: Ticket type (e.g. story, task, bug etc...)
 
-### Map types
+## Map types
 
 The `mapTypes` config option allows jira ticket types to be mapped to other values for branch name generation. For
 example a ticket type of `Story` may want to be mapped in the branch name to `feature`.
 
-#### Example
+### Example
 
 ```json
 {
@@ -206,12 +219,12 @@ The wildcard `*` can be used as a default case. If a key of `*` is set for `map_
 case will be applied to the type variable when no other type mappings are matched. Without a default case, if
 no `map_type` mappings are found then the original value for the ticket type is used.
 
-### Case
+## Case
 
 The case option can be used to transform the real Jira values to either upper or lower case. Valid values are
 either `"upper"` or `"lower"`.
 
-#### Example
+### Example
 
 ```json
 {
@@ -224,7 +237,7 @@ either `"upper"` or `"lower"`.
 }
 ```
 
-### Full example configuration file
+## Full example configuration file
 
 This is an example of a complete `~/.config/jira-branches/config.json` with all options applied.
 
