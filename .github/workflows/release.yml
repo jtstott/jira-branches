@@ -21,7 +21,7 @@ jobs:
       - name: Zip release files
         shell: bash
         run: |
-          cd bin/jb-aarch64-apple-darwin
+          cd bin/aarch64-apple-darwin
           tar -czf jb-aarch64-apple-darwin.tar.gz jb
 
       - name: Release
