@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 /// Jira Branches
@@ -19,8 +20,20 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Commands {
+    /// Configure Jira Branches
+    Configure {
+        /// Sets configuration from config file path
+        #[arg(short, long, value_name = "FILE", global = true)]
+        file: Option<PathBuf>,
+    },
     /// Checkout branch for a Jira issue
     Checkout {
+        /// Jira issue ID or URL
+        #[arg()]
+        issue: String,
+    },
+    /// List branches for a Jira issue
+    Ls {
         /// Jira issue ID or URL
         #[arg()]
         issue: String,

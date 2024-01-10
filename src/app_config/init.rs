@@ -1,18 +1,11 @@
+use config::ConfigError;
 use crate::app_config::{AppConfig};
-use crate::app_config::file_parser;
+use crate::app_config::config_loader;
 use crate::cli::cli_parser::Cli;
-use crate::jira::auth::JiraAuth;
 
-pub fn initialize_config(cli: &Cli) -> AppConfig {
-    let config = file_parser::read_config_file();
-    let mut auth = file_parser::read_auth_file();
-
-    if let Some(cli_auth) = JiraAuth::from_cli(cli) {
-        auth = cli_auth
-    }
-
-    AppConfig {
-        auth,
-        config
-    }
+pub fn initialize_config(cli: Option<&Cli>) -> Result<AppConfig, ConfigError> {
+    Ok(AppConfig {
+        auth: config_loader::load_auth(cli)?,
+        config: config_loader::load_user_config()?,
+    })
 }
